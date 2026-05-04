@@ -6,8 +6,8 @@
   "author": "Satoru Sakurai",
   "homepage_url": "https://github.com/sakurairai/detox",
   "minimum_chrome_version": "102",
-  "permissions": ["webNavigation", "tabs", "storage", "scripting"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": ["webNavigation", "storage", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
     "service_worker": "background.js"
   },
