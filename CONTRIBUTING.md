@@ -56,4 +56,4 @@ PR 提出前に以下を確認してください:
 
 ## リリース
 
-メンテナのみが行います。`manifest.json` の `version` を更新し、`CHANGELOG.md` に記載した上で `extension/` を zip 化して [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) からアップロードします。詳細手順は [README](./README.md) の「Chrome Web Store 公開手順」を参照。
+メンテナのみが行います。手順は [RELEASING.md](./RELEASING.md) を参照してください。
