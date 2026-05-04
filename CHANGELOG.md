@@ -5,9 +5,9 @@
 
 ## [Unreleased]
 
-## [1.3.0] - 2026-05-04
+## [1.0.0] - 2026-05-04
 
-初回の公開準備版。`1.0.0` から `1.2.x` までは内部反復のため、最初の公開は `1.3.0` から開始する。
+初回の公開準備版。
 
 ### Added
 
@@ -46,5 +46,5 @@
 - 既定の `DEFAULT_RULES` を空にし、ハードコードされた誘導 URL を削除
 - `importScripts` の引数は拡張パッケージ内の相対パス固定（remote code execution 対策）
 
-[Unreleased]: https://github.com/sakurairai/detox/compare/v1.3.0...HEAD
-[1.3.0]: https://github.com/sakurairai/detox/releases/tag/v1.3.0
+[Unreleased]: https://github.com/sakurairai/detox/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sakurairai/detox/releases/tag/v1.0.0

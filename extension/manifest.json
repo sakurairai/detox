@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SNS Detox Redirect",
-  "version": "1.3.0",
+  "version": "1.0.0",
   "description": "Redirect away from time-sink sites after a configurable dwell time and probability. / 対象ドメインの滞在時間と確率でリダイレクトします。",
   "author": "Satoru Sakurai",
   "homepage_url": "https://github.com/sakurairai/detox",
