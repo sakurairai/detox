@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>SNS Detox Redirect</title>
+<style>
+  /* ============================================================
+     カラートークン（ライト/ダーク）
+     ============================================================ */
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f6f8fa;
+    --bg-sub: #fcfcfd;
+    --bg-input: #ffffff;
+    --border: #e1e4e8;
+    --border-strong: #b1b9c2;
+    --border-soft: #d8dee4;
+    --text: #24292f;
+    --muted: #57606a;
+    --primary: #0969da;
+    --primary-hover: #0860c9;
+    --primary-soft: #c7d3e0;
+    --accent-bg: #ddf4ff;
+    --accent-border: #54aeff;
+    --danger: #cf222e;
+    --danger-bg: #fbeaec;
+    --danger-border: #f4c0c4;
+    --highlight: #fff8c5;
+    --success: #1a7f37;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c2128;
+      --bg-alt: #22272e;
+      --bg-sub: #1f242b;
+      --bg-input: #22272e;
+      --border: #373e47;
+      --border-strong: #545d68;
+      --border-soft: #2d333b;
+      --text: #cdd9e5;
+      --muted: #909dab;
+      --primary: #539bf5;
+      --primary-hover: #6cb0f7;
+      --primary-soft: #2d3a4a;
+      --accent-bg: #1c2c3f;
+      --accent-border: #316dca;
+      --danger: #f47067;
+      --danger-bg: #3c1d20;
+      --danger-border: #b8403c;
+      --highlight: #4a3d12;
+      --success: #57ab5a;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  /* キーボード操作時のフォーカス視認性 (WCAG 2.4.7) */
+  button:focus-visible,
+  input:focus-visible,
+  [type="checkbox"]:focus-visible {
+    outline: 2px solid var(--accent-border);
+    outline-offset: 2px;
+  }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", sans-serif;
+    padding: 14px;
+    width: 480px;
+    margin: 0;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 13px;
+  }
+  h3 { margin: 0 0 4px; font-size: 15px; }
+  .desc { color: var(--muted); margin: 0 0 12px; font-size: 12px; }
+
+  /* クイックアクション */
+  .quick {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .quick.hidden { display: none; }
+  .quick .host { font-weight: 600; }
+  .quick .spacer { flex: 1; }
+
+  /* ルールカード */
+  .rules { display: flex; flex-direction: column; gap: 10px; }
+
+  .rule {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: var(--bg);
+  }
+  .rule.highlight { background: var(--highlight); transition: background 1.2s; }
+  .rule.disabled { opacity: 0.55; }
+
+  .rule-head { display: flex; align-items: center; gap: 8px; }
+  .rule-head input[type="text"],
+  .rule-head input[type="url"] {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 5px 6px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: inherit;
+    background: var(--bg-input);
+    color: var(--text);
+  }
+  .rule-head input[aria-invalid="true"] {
+    border-color: var(--danger-border);
+    background: var(--danger-bg);
+  }
+  .rule-head .arrow { color: var(--muted); font-size: 13px; }
+  .rule-head .toggle { display: flex; align-items: center; }
+
+  /* タイマーセクション */
+  .timers {
+    margin: 10px 0 0 24px;
+    padding: 8px 10px 6px;
+    background: var(--bg-sub);
+    border-left: 3px solid var(--border-soft);
+    border-radius: 0 4px 4px 0;
+  }
+  .timers-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .timer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    flex-wrap: nowrap;
+  }
+  .timer input[type="number"] {
+    flex: 0 0 auto;
+    width: 48px;
+    min-width: 0;
+    padding: 3px 5px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: right;
+    background: var(--bg-input);
+    color: var(--text);
+  }
+  .timer .unit { color: var(--muted); white-space: nowrap; }
+  .timer .timer-spacer { flex: 1; }
+
+  /* ボタン */
+  .btn {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .btn:hover { background: var(--bg-alt); border-color: var(--border-strong); }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+
+  .btn-add-timer {
+    margin-top: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--primary);
+    border-color: var(--primary-soft);
+    background: var(--bg);
+  }
+  .btn-add-timer:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+  }
+
+  .btn-remove {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    line-height: 1.4;
+  }
+  .btn-remove:hover {
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+  }
+  .btn-remove.icon { font-size: 15px; padding: 1px 7px; }
+
+  /* フッター */
+  .toolbar { margin-top: 12px; display: flex; gap: 8px; align-items: center; }
+  .msg { margin-left: auto; font-size: 11px; color: var(--success); min-height: 1em; }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px 0;
+    font-size: 12px;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+  }
+
+  .hint { margin-top: 12px; font-size: 11px; color: var(--muted); line-height: 1.6; }
+  code {
+    background: var(--bg-alt);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+  <h3>SNS Detox Redirect</h3>
+  <p class="desc">対象ドメインに滞在した秒数と確率に応じて、別のURLへリダイレクトします。</p>
+
+  <div class="quick hidden" id="quick"></div>
+
+  <div class="rules" id="rules"></div>
+
+  <div class="toolbar">
+    <button id="add" class="btn btn-primary">＋ ルールを追加</button>
+    <div class="msg" id="msg" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <div class="hint">
+    ・ <strong>対象ドメイン</strong> はホスト名のみ（例: <code>x.com</code>）。サブドメインも自動でマッチ。<br>
+    ・ <strong>タイマー</strong> は「対象ドメインを開いてから N 秒後に M% でリダイレクト」を意味します。複数指定可。<br>
+    ・ リダイレクト時は新しいタブで開いて元のSNSタブを閉じます（戻るボタンで戻れません）。<br>
+    ・ リダイレクト先ページの上部にバナーが表示されます。<br>
+    ・ タイマーは保存後、次回ポップアップを開いた時に秒数の昇順で表示されます。<br>
+    ・ 変更は自動で保存されます。
+  </div>
+
+  <script src="lib/host.js"></script>
+  <script src="lib/rules.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
