@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- `manifest.json`: `host_permissions` を `<all_urls>` から `["http://*/*", "https://*/*"]` に変更（HTTP / HTTPS に限定）
+- `manifest.json`: `tabs` パーミッションを削除（`chrome.tabs.create` / `chrome.tabs.remove` / `chrome.tabs.query` はホスト権限のみで動作可能なため不要）
+
 ## [1.0.0] - 2026-05-04
 
 初回の公開準備版。
